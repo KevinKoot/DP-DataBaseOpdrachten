@@ -34,23 +34,23 @@
 DROP VIEW IF EXISTS s2_1; CREATE OR REPLACE VIEW s2_1 AS
 
 select code, omschrijving from cursussen
- where lengte = 4
+where lengte = 4
 
 
 -- S2.2. Medewerkersoverzicht
 --
 -- Geef alle informatie van alle medewerkers, gesorteerd op functie,
 -- en per functie op leeftijd (van jong naar oud).
- DROP VIEW IF EXISTS s2_2; CREATE OR REPLACE VIEW s2_2 AS
+DROP VIEW IF EXISTS s2_2; CREATE OR REPLACE VIEW s2_2 AS
 
- select * from medewerkers order by functie, gbdatum asc
+select * from medewerkers order by functie, gbdatum asc
 
 
 -- S2.3. Door het land
 --
 -- Welke cursussen zijn in Utrecht en/of in Maastricht uitgevoerd? Geef
 -- code en begindatum.
- DROP VIEW IF EXISTS s2_3; CREATE OR REPLACE VIEW s2_3 AS
+DROP VIEW IF EXISTS s2_3; CREATE OR REPLACE VIEW s2_3 AS
 
 select cursus, begindatum from uitvoeringen where locatie = 'UTRECHT' or locatie = 'MAASTRICHT'[TEST]
 
@@ -58,10 +58,10 @@ select cursus, begindatum from uitvoeringen where locatie = 'UTRECHT' or locatie
 -- S2.4. Namen
 --
 -- Geef de naam en voorletters van alle medewerkers, behalve van R. Jansen.
- DROP VIEW IF EXISTS s2_4; CREATE OR REPLACE VIEW s2_4 AS
+DROP VIEW IF EXISTS s2_4; CREATE OR REPLACE VIEW s2_4 AS
 
 SELECT naam, voorl FROM medewerkers
-EXCEPT SELECT * FROM medewerkers
+EXCEPT SELECT naam, voorl FROM medewerkers
 WHERE mnr = 7900
 
 
@@ -73,8 +73,8 @@ WHERE mnr = 7900
 -- komende 2 maart. De cursus wordt gegeven in Leerdam door Nick Smit.
 -- Voeg deze gegevens toe.
 
-insert into uitvoeringen (cursus, begindatum, docent, locatie)
-values('S02', '2024-03-02', 7902, 'LEERDAM' )
+    insert into uitvoeringen (cursus, begindatum, docent, locatie)
+values('S02', '2024-03-02', 7369, 'LEERDAM' )
 
 
 INSERT
@@ -87,8 +87,8 @@ ON CONFLICT DO NOTHING;                                                         
 -- voer zijn of haar gegevens in. Kies een personeelnummer boven de 8000.
 
 insert into medewerkers (mnr, naam, voorl, functie, chef, gbdatum, maandsal, comm, afd)
-values(8001, 'Koot', 'K', 'STAGAIR', 7903, '2001-12-09', 500, null, 30)
-INSERT
+values(8001, 'Koot', 'K', 'STAGIAIR', 7903, '2001-12-09', 500, null, 30)
+    INSERT
 ON CONFLICT DO NOTHING;                                                                                         -- [TEST]
 
 
@@ -100,7 +100,7 @@ ON CONFLICT DO NOTHING;                                                         
 update schalen set bovengrens = 4000 where snr = 5
 
 --voor de 6de schaal
-insert into schalen(snr, ondergrens, bovengrens, toelage)
+    insert into schalen(snr, ondergrens, bovengrens, toelage)
 values(6, 4001, 9999, 1000)
 
 
@@ -117,7 +117,7 @@ ON CONFLICT DO NOTHING;                                                         
 insert into cursussen (code, omschrijving, type, lengte)
 values('D&P', 'pgADMIN voor studenten', 'DSG', 6)
 
-insert into uitvoeringen (cursus, begindatum, docent, locatie)
+    insert into uitvoeringen (cursus, begindatum, docent, locatie)
 values('D&P', '2024-03-03', 7876, 'LEERDAM')
 
 insert into uitvoeringen (cursus, begindatum, docent, locatie)
@@ -156,7 +156,7 @@ ON CONFLICT DO NOTHING;                                                         
 update medewerkers
 set maandsal = maandsal *
                case when functie = 'manager' then 1.07 else 1.055
-               end;
+                   end;
 
 
 -- S2.10. Concurrent
@@ -169,7 +169,7 @@ Delete from Medewerkers where naam = 'MARTENS'
 -- Zijn collega Alders heeft ook plannen om te vertrekken. Verwijder ook zijn gegevens.
 -- Waarom lukt dit (niet)?
 
-Omdat er nog wordt verwezen naar deze persoon in een andere tabel (inschrijvingen).
+    Omdat er nog wordt verwezen naar deze persoon in een andere tabel (inschrijvingen).
 
 
 -- S2.11. Nieuwe afdeling
