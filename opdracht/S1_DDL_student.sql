@@ -51,8 +51,11 @@ ALTER COLUMN geslacht SET NOT NULL;
 insert  into medewerkers (mnr, naam, voorl, functie, chef, gbdatum, maandsal, comm, afd, geslacht)
 values(8000, 'DONK', 'A', 'DIRECTEUR', NULL, '1970-03-12', 5000, NULL, NULL, 'M' )
 
+insert into afdelingen (anr, naam, locatie, hoofd)
+values(50, 'ONDERZOEK', 'ZWOLLE', 8000 )
 
 
+update medewerkers set afd = 50 where mnr = 8000
 
 -- S1.3. Verbetering op afdelingentabel
 --
