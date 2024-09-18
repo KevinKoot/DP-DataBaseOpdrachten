@@ -35,6 +35,10 @@
 -- geaccepteerd. Test deze regel en neem de gegooide foutmelding op als
 -- commentaar in de uitwerking.
 
+ALTER TABLE medewerkers
+ADD CONSTRAINT m_geslacht_chk CHECK (geslacht IN ('M', 'V')),
+ALTER COLUMN geslacht SET NOT NULL;
+
 
 -- S1.2. Nieuwe afdeling
 --
@@ -43,6 +47,11 @@
 -- nieuwe medewerker A DONK aangenomen. Hij krijgt medewerkersnummer 8000
 -- en valt direct onder de directeur.
 -- Voeg de nieuwe afdeling en de nieuwe medewerker toe aan de database.
+
+insert  into medewerkers (mnr, naam, voorl, functie, chef, gbdatum, maandsal, comm, afd, geslacht)
+values(8000, 'DONK', 'A', 'DIRECTEUR', NULL, '1970-03-12', 5000, NULL, NULL, 'M' )
+
+
 
 
 -- S1.3. Verbetering op afdelingentabel
@@ -54,6 +63,21 @@
 --      de nieuwe sequence.
 --   c) Op enig moment gaat het mis. De betreffende kolommen zijn te klein voor
 --      nummers van 3 cijfers. Los dit probleem op.
+
+--1.3a
+create sequence if not exists afdelingen_anr_seq
+increment 10
+start 60
+minvalue 10
+maxvalue 1000
+
+alter table afdelingen
+    alter column anr set default nextval('afdelingen_anr_seq')
+
+
+--1.3c
+ALTER TABLE afdeling
+ALTER COLUMN anr TYPE NUMERIC;
 
 
 -- S1.4. Adressen
@@ -69,12 +93,32 @@
 --    telefoon      10 cijfers, uniek
 --    med_mnr       FK, verplicht
 
+create table adressen (
+                          postcode char(6) not null,
+                          huisnummer int not null,
+                          ingangsdatum date not null,
+                          einddatum date,
+                          telefoon char(10) unique not null,
+                          med_mnr int not null,
+                          primary key(postcode, huisnummer, ingangsdatum),
+                          foreign key(med_mnr) references medewerkers(mnr),
+                          check(einddatum is null or einddatum > ingangsdatum)
+)
+
 
 -- S1.5. Commissie
 --
 -- De commissie van een medewerker (kolom `comm`) moet een bedrag bevatten als de medewerker een functie als
 -- 'VERKOPER' heeft, anders moet de commissie NULL zijn. Schrijf hiervoor een beperkingsregel. Gebruik onderstaande
 -- 'illegale' INSERTs om je beperkingsregel te controleren.
+
+ALTER TABLE medewerkers
+    ADD CONSTRAINT chk_commissie_functie
+        CHECK (
+            (functie = 'VERKOPER' AND comm IS NOT NULL) OR
+            (functie <> 'VERKOPER' AND comm IS NULL)
+            );
+
 
 INSERT INTO medewerkers (mnr, naam, voorl, functie, chef, gbdatum, maandsal, comm)
 VALUES (8001, 'MULLER', 'TJ', 'TRAINER', 7566, '1982-08-18', 2000, 500);
